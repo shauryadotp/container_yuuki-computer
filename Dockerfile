@@ -38,7 +38,7 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
 
 # User & sudo setup
 RUN groupadd --gid ${GID} ${USERNAME} \
-    && useradd --uid ${UID} --gid ${GID} -m -s /bin/bash ${USERNAME} \
+    && useradd --uid ${UID} --gid ${GID} -m -s /bin/bash ${USERNAME} -p '*' ${USERNAME} \
     && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
@@ -78,11 +78,11 @@ RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "${FNM_
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 4. Helium Browser (from local .deb)
-COPY --chown=${USERNAME}:${USERNAME} deb/helium*.deb /tmp/helium.deb
-RUN sudo apt-get update && \
-    sudo apt-get install -y --no-install-recommends /tmp/helium.deb && \
-    rm -f /tmp/helium.deb && \
-    sudo rm -rf /var/lib/apt/lists/*
+# COPY --chown=${USERNAME}:${USERNAME} deb/helium*.deb /tmp/helium.deb
+# RUN sudo apt-get update && \
+#     sudo apt-get install -y --no-install-recommends /tmp/helium.deb && \
+#     rm -f /tmp/helium.deb && \
+#     sudo rm -rf /var/lib/apt/lists/*
 
 # 5. njs packages
 RUN bun add -g agent-browser
