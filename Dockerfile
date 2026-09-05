@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg \
     openssh-server \
     openssh-client \
+    iproute2 \
+    fastfetch \
     curl \
     wget \
     git \
@@ -38,7 +40,7 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
 
 # User & sudo setup
 RUN groupadd --gid ${GID} ${USERNAME} \
-    && useradd --uid ${UID} --gid ${GID} -m -s /bin/bash ${USERNAME} -p '*' ${USERNAME} \
+    && useradd --uid ${UID} --gid ${GID} -m -s /bin/bash -p '*' ${USERNAME} \
     && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
@@ -77,12 +79,15 @@ RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "${FNM_
 # 3. uv
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 4. Helium Browser (from local .deb)
-# COPY --chown=${USERNAME}:${USERNAME} deb/helium*.deb /tmp/helium.deb
-# RUN sudo apt-get update && \
-#     sudo apt-get install -y --no-install-recommends /tmp/helium.deb && \
-#     rm -f /tmp/helium.deb && \
-#     sudo rm -rf /var/lib/apt/lists/*
+# 4. Helium Browser
+# RUN install -m 0755 -d /etc/apt/keyrings && \
+#     curl -fsSL https://raw.githubusercontent.com/imputnet/helium-linux/main/pubkey.asc | gpg --dearmor -o /etc/apt/keyrings/helium.gpg && \
+#     chmod a+r /etc/apt/keyrings/helium.gpg && \
+#     echo "deb [signed-by=/etc/apt/keyrings/helium.gpg] https://pkg.helium.computer/deb stable main" > /etc/apt/sources.list.d/helium.list && \
+#     apt-get update && \
+#     apt-get install -y helium-bin && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/*
 
 # 5. njs packages
 RUN bun add -g agent-browser
