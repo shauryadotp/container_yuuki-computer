@@ -71,8 +71,8 @@ RUN curl -fsSL https://bun.sh/install | bash
 # 2. fnm + Node LTS
 RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "${FNM_DIR}" --skip-shell && \
     echo 'eval "$(fnm env --use-on-cd --shell bash)"' >> ~/.bashrc && \
-    ${FNM_DIR}/fnm install --lts && \
-    ${FNM_DIR}/fnm default lts
+    ${FNM_DIR}/fnm install 24 && \
+    ${FNM_DIR}/fnm default 24
 
 # 3. uv
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
