@@ -1,0 +1,15 @@
+services:
+  yuuki-computer:
+    build: .
+    container_name: yuuki-computer
+    ports:
+      - "3022:22"
+    restart: unless-stopped
+    hostname: computer
+    volumes:
+      - /home/shaurya/.ssh/keys/yuuki-container/yuuki.pub:/home/yuuki/.ssh/authorized_keys:ro
+      - /home/shaurya/.ssh/keys/azure/azure:/home/yuuki/.ssh/azure:ro
+      - /home/shaurya/.ssh/keys/gh/lil-yuuki/gh_lil-yuuki:/home/yuuki/.ssh/gh:ro
+      - /work:/work:rw
+      - /yuuki:/home/yuuki/.bean-brain:rw
+      - /storage/yuuki:/storage/yuuki:rw
