@@ -1,0 +1,21 @@
+Host *
+    IdentitiesOnly yes
+    AddKeysToAgent no
+    StrictHostKeyChecking accept-new
+
+# GitHub
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile /home/yuuki/.ssh/gh
+
+# Azure VMs
+Host sin
+    HostName 100.72.20.1
+    User yuuki
+    IdentityFile /home/yuuki/.ssh/azure
+
+Host pnq
+    HostName 100.65.65.1
+    User yuuki
+    IdentityFile /home/yuuki/.ssh/azure
