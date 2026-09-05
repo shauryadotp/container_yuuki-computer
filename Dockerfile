@@ -67,30 +67,37 @@ ENV GIT_AUTHOR_NAME="Yuuki Ai" \
     GIT_COMMITTER_NAME="Yuuki Ai" \
     GIT_COMMITTER_EMAIL="yuuki-git@petalbit.in"
 
-# 1. bun
-RUN curl -fsSL https://bun.sh/install | bash
+    # 1. bun
+    RUN curl -fsSL https://bun.sh/install | bash
 
-# 2. fnm + Node LTS
-RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "${FNM_DIR}" --skip-shell && \
-    echo 'eval "$(fnm env --use-on-cd --shell bash)"' >> ~/.bashrc && \
-    ${FNM_DIR}/fnm install 24 && \
-    ${FNM_DIR}/fnm default 24
+    # 2. fnm + Node
+    RUN curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "${FNM_DIR}" --skip-shell && \
+        ${FNM_DIR}/fnm install 24 && \
+        ${FNM_DIR}/fnm default 24
 
-# 3. uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+    # 3. uv
+    RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 4. Helium Browser
-# RUN install -m 0755 -d /etc/apt/keyrings && \
-#     curl -fsSL https://raw.githubusercontent.com/imputnet/helium-linux/main/pubkey.asc | gpg --dearmor -o /etc/apt/keyrings/helium.gpg && \
-#     chmod a+r /etc/apt/keyrings/helium.gpg && \
-#     echo "deb [signed-by=/etc/apt/keyrings/helium.gpg] https://pkg.helium.computer/deb stable main" > /etc/apt/sources.list.d/helium.list && \
-#     apt-get update && \
-#     apt-get install -y helium-bin && \
-#     apt-get clean && \
-#     rm -rf /var/lib/apt/lists/*
+    # login/interactive PATH (Docker ENV + sshd SetEnv get reset by /etc/profile)
+    RUN printf '%s\n' \
+          '' \
+          '# user tools' \
+          'export BUN_INSTALL="$HOME/.bun"' \
+          'export FNM_DIR="$HOME/.fnm"' \
+          'export PATH="$HOME/.local/bin:$BUN_INSTALL/bin:$FNM_DIR:$FNM_DIR/aliases/default/bin:$PATH"' \
+          'command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell bash)"' \
+          >> ~/.profile && \
+        printf '%s\n' \
+          '' \
+          '# user tools' \
+          'export BUN_INSTALL="$HOME/.bun"' \
+          'export FNM_DIR="$HOME/.fnm"' \
+          'export PATH="$HOME/.local/bin:$BUN_INSTALL/bin:$FNM_DIR:$FNM_DIR/aliases/default/bin:$PATH"' \
+          'command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell bash)"' \
+          >> ~/.bashrc
 
 # 5. njs packages
-RUN bun add -g agent-browser
+# RUN bun add -g agent-browser
 
 USER root
 EXPOSE 22
